@@ -1,0 +1,307 @@
+#  Licensed to Elasticsearch B.V. under one or more contributor
+#  license agreements. See the NOTICE file distributed with
+#  this work for additional information regarding copyright
+#  ownership. Elasticsearch B.V. licenses this file to you under
+#  the Apache License, Version 2.0 (the "License"); you may
+#  not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+# 	http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing,
+#  software distributed under the License is distributed on an
+#  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+#  specific language governing permissions and limitations
+#  under the License.
+
+import json
+
+
+class Query:
+    def __init__(self, parent=None):
+        self.parent = parent
+
+    def __repr__(self):
+        return self.render()
+
+    def render(self):
+        return (
+            self.parent.render() + "\n| " if self.parent else ""
+        ) + self.render_basic()
+
+    def change_point(self, value, key=None, type_name=None, pvalue_name=None):
+        q = self.copy()
+        q.proc.append(
+            ChangePoint(value, key=key, type_name=type_name, pvalue_name=pvalue_name)
+        )
+        return q
+
+    def dissect(self, input, pattern, separator=None):
+        q = self.copy()
+        q.proc.append(Dissect(input, pattern, separator=separator))
+        return q
+
+    def drop(self, *columns):
+        q = self.copy()
+        q.proc.append(Drop(*columns))
+        return q
+
+    def enrich(self, policy, match_field=None, fields=None):
+        q = self.copy()
+        q.proc.append(Enrich(policy, match_field=match_field, fields=fields))
+        return q
+
+    def eval(self, *columns, **named_columns):
+        q = self.copy()
+        q.proc.append(Eval(*columns, **named_columns))
+        return q
+
+    def grok(self, input, pattern):
+        q = self.copy()
+        q.proc.append(Grok(input, pattern))
+        return q
+
+    def keep(self, *columns):
+        q = self.copy()
+        q.proc.append(Keep(*columns))
+        return q
+
+    def limit(self, max_number_of_rows):
+        q = self.copy()
+        q.proc.append(Limit(max_number_of_rows))
+        return q
+
+    def lookup_join(self, lookup_index, field):
+        q = self.copy()
+        q.proc.append(LookupJoin(lookup_index, field))
+        return q
+
+    def mv_expand(self, column):
+        q = self.copy()
+        q.proc.append(MvExpand(column))
+        return q
+
+    def rename(self, **columns):
+        q = self.copy()
+        q.proc.append(Rename(**columns))
+        return q
+
+    def sample(self, probability):
+        q = self.copy()
+        q.proc.append(Sample(probability))
+        return q
+
+    def sort(self, *columns):
+        q = self.copy()
+        q.proc.append(Sort(*columns))
+        return q
+
+    def stats(self, *expressions, groups=None):
+        q = self.copy()
+        q.proc.append(Stats(*expressions, groups=groups))
+        return q
+
+    def where(self, *anded_expressions):
+        q = self.copy()
+        q.proc.append(Where([str(expr) for expr in anded_expressions]))
+        return q
+
+
+class From(Query):
+    def __init__(self, *indices):
+        self.indices = indices
+        self.metadata_fields = tuple()
+
+    def metadata(self, *fields):
+        self.metadata_fields = fields
+
+    def render_basic(self):
+        indices = [
+            index if isinstance(index, str) else index._index._name
+            for index in self.indices
+        ]
+        s = f'FROM {", ".join(indices)}'
+        if self.metadata_fields:
+            s = s + f' METADATA {", ".join(self.metadata_fields)}'
+        return s
+
+
+class Row(Query):
+    def __init__(self, **params):
+        self.params = params
+
+    def render_basic(self):
+        return "ROW " + ", ".join(
+            [f"{k} = {json.dumps(v)}" for k, v in self.params.items()]
+        )
+
+
+class Show(Query):
+    def __init__(self, item):
+        self.item = item
+
+    def render_basic(self):
+        return f"SHOW {self.item}"
+
+
+class ChangePoint(Query):
+    def __init__(self, value, key=None, type_name=None, pvalue_name=None):
+        self.value = value
+        self.key = key
+        self.type_name = type_name
+        self.pvalue_name = pvalue_name
+
+    def render_basic(self):
+        key = "" if not self.key else f" ON {self.key}"
+        names = (
+            ""
+            if not self.type_name and not self.pvalue_name
+            else f' AS {self.type_name or "type"}, {self.pvalue_name or "pvalue"}'
+        )
+        return f"CHANGE_POINT {self.value}{key}{names}"
+
+
+class Dissect(Query):
+    def __init__(self, input, pattern, separator=None):
+        self.input = input
+        self.pattern = pattern
+        self.separator = separator
+
+    def render_basic(self):
+        sep = "" if self.separator is None else f' APPEND_SEPARATOR="{self.separator}"'
+        return f"DISSECT {self.input} {json.dumps(self.pattern)}{sep}"
+
+
+class Drop(Query):
+    def __init__(self, *columns):
+        self.columns = columns
+
+    def render_basic(self):
+        return f'DROP {", ".join([str(col) for col in self.columns])}'
+
+
+class Enrich(Query):
+    def __init__(self, policy, match_field=None, fields=None):
+        self.policy = policy
+        self.match_field = match_field
+        self.fields = fields
+
+    def render_basic(self):
+        on = "" if self.match_field is None else f" ON {self.match_field}"
+        with_ = ""
+        if isinstance(self.fields, dict):
+            with_ = f' WITH {", ".join([f"{name} = {field}" for name, field in self.fields.items()])}'
+        elif self.fields is not None:
+            with_ = f' WITH {", ".join(self.fields)}'
+        return f"ENRICH {self.policy}{on}{with_}"
+
+
+class Eval(Query):
+    def __init__(self, *columns, **named_columns):
+        self.columns = columns
+        self.named_columns = named_columns
+
+    def render_basic(self):
+        named = ", ".join(
+            [f"{name} = {value}" for name, value in self.named_columns.items()]
+        )
+        unnamed = ", ".join(self.columns)
+        sep = "" if named == "" or unnamed == "" else ", "
+        return f"EVAL {named}{sep}{unnamed}"
+
+
+class Grok(Query):
+    def __init__(self, input, pattern):
+        self.input = input
+        self.pattern = pattern
+
+    def render_basic(self):
+        return f"GROK {self.input} {json.dumps(self.pattern)}"
+
+
+class Keep(Query):
+    def __init__(self, *columns):
+        self.columns = columns
+
+    def render_basic(self):
+        return f'KEEP {", ".join(self.columns)}'
+
+
+class Limit(Query):
+    def __init__(self, max_number_of_rows):
+        self.max_number_of_rows = max_number_of_rows
+
+    def render_basic(self):
+        return f"LIMIT {self.max_number_of_rows}"
+
+
+class LookupJoin(Query):
+    def __init__(self, lookup_index, field):
+        self.lookup_index = lookup_index
+        self.field = field
+
+    def render_basic(self):
+        return f"LOOKUP JOIN {self.lookup_index} ON {self.field}"
+
+
+class MvExpand(Query):
+    def __init__(self, column):
+        self.column = column
+
+    def render_basic(self):
+        return f"MV_EXPAND {self.column}"
+
+
+class Rename(Query):
+    def __init__(self, **columns):
+        self.columns = columns
+
+    def render_basic(self):
+        return f'RENAME {", ".join([f"{old_name} = {new_name}" for old_name, new_name in self.columns.items()])}'
+
+
+class Sample(Query):
+    def __init__(self, probability):
+        self.probability = probability
+
+    def render_basic(self):
+        return f"SAMPLE {self.probability}"
+
+
+class Sort(Query):
+    def __init__(self, *columns):
+        self.columns = columns
+
+    def render_basic(self):
+        return f'SORT {", ".join(self.columns)}'
+
+
+class Stats(Query):
+    def __init__(self, *expressions, groups=None):
+        self.expressions = expressions
+        self.groups = groups
+
+    def render_basic(self):
+        by = "" if self.groups is None else f'BY {", ".join(self.groups)}'
+        return f'STATS {", ".join(self.expressions)}{by}'
+
+
+class Where(Query):
+    def __init__(self, anded_expressions):
+        self.anded_expressions = anded_expressions
+
+    def render_basic(self):
+        return f'WHERE {" AND ".join(self.anded_expressions)}'
+
+
+def esql_from(*indices, metadata_fields=None):
+    return Query(From(*indices, metadata_fields=metadata_fields))
+
+
+def esql_row(**params):
+    return Query(Row(*params))
+
+
+def esql_show(item):
+    return Query(Show(item))

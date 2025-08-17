@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DBInsight - Help & Documentation</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f8fafc;
+      }
+      .sidebar {
+        width: 250px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: #f1f5f9;
+        padding: 20px;
+        border-right: 2px solid #e2e8f0;
+        overflow-y: auto;
+      }
+      .sidebar h2 {
+        color: #5a67d8;
+      }
+      .sidebar a {
+        display: block;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        text-decoration: none;
+        color: #333;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+      .sidebar a:hover {
+        background: #e2e8f0;
+        color: #5a67d8;
+      }
+      .content {
+        margin-left: 270px;
+        padding: 30px;
+        max-width: 900px;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2d3748;
+      }
+      pre,
+      code {
+        background: #edf2f7;
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: block;
+        margin: 10px 0;
+        overflow-x: auto;
+      }
+      section {
+        margin-bottom: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <h2>Documentation</h2>
+      <a href="#intro">Introduction</a>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#usage">Usage Guide</a>
+      <a href="#api">API Reference</a>
+      <a href="#faq">FAQ</a>
+      <a href="#support">Support</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <section id="intro">
+        <h1>DBInsight Documentation</h1>
+        <p>
+          Welcome to the official documentation of <b>DBInsight</b>. This guide
+          will help you install, configure, and use DBInsight effectively.
+        </p>
+      </section>
+
+      <section id="getting-started">
+        <h2>Getting Started</h2>
+        <p>Follow these steps to set up DBInsight:</p>
+        <ol>
+          <li>Install Python 3.9 or higher</li>
+          <li>
+            Clone the repository:
+            <pre><code>git clone https://github.com/your-repo/dbinsight.git</code></pre>
+          </li>
+          <li>
+            Install dependencies:
+            <pre><code>pip install -r requirements.txt</code></pre>
+          </li>
+          <li>
+            Run the Flask server:
+            <pre><code>flask run</code></pre>
+          </li>
+          <li>
+            Open in browser:
+            <pre><code>http://127.0.0.1:5000</code></pre>
+          </li>
+        </ol>
+      </section>
+
+      <section id="usage">
+        <h2>Usage Guide</h2>
+        <p>
+          Once DBInsight is running, you can interact with your database using
+          natural language queries:
+        </p>
+        <ul>
+          <li>
+            <b>Connect:</b> Use the connection modal to enter DB credentials.
+          </li>
+          <li>
+            <b>Ask:</b> Type queries like <i>"Show me top 10 customers"</i>.
+          </li>
+          <li>
+            <b>Translate:</b> DBInsight automatically converts text into SQL.
+          </li>
+          <li><b>View:</b> Results are shown as tables and charts.</li>
+          <li><b>Export:</b> Download data in CSV format.</li>
+        </ul>
+      </section>
+
+      <section id="api">
+        <h2>API Reference</h2>
+        <h3>POST /api/query</h3>
+        <p>
+          <b>Description:</b> Executes a natural language query and returns
+          results.
+        </p>
+        <p><b>Request Example:</b></p>
+        <pre><code>{
+  "query": "Show top 5 products"
+}</code></pre>
+        <p><b>Response Example:</b></p>
+        <pre><code>{
+  "status": "success",
+  "data": [
+    {"product": "Laptop", "sales": 1200},
+    {"product": "Phone", "sales": 980}
+  ]
+}</code></pre>
+      </section>
+
+      <section id="faq">
+        <h2>FAQ</h2>
+        <h3>1. Which databases are supported?</h3>
+        <p>
+          Currently MySQL, PostgreSQL, and SQLite. Support for more is coming.
+        </p>
+        <h3>2. How can I export results?</h3>
+        <p>Use the "Export CSV" button available in the results section.</p>
+        <h3>3. My query failed, what do I do?</h3>
+        <p>
+          Check if database credentials are correct and the SQL translation is
+          valid.
+        </p>
+      </section>
+
+      <section id="support">
+        <h2>Support</h2>
+        <p>If you face issues, please contact the developer team at:</p>
+        <p><b>Email:</b> support@dbinsight.com</p>
+        <p>
+          <b>GitHub:</b>
+          <a href="https://github.com/your-repo/dbinsight"
+            >Project Repository</a
+          >
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

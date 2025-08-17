@@ -1,0 +1,13 @@
+flask
+pandas
+seaborn
+matplotlib
+psycopg2-binary
+pymysql
+pymongo
+redis
+google-generativeai
+python-dotenv
+firebase-admin 
+elasticsearch 
+google-cloud-firestore

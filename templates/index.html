@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/static/icons/black_logo.svg" />
+
+    <title>DBInsight</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="navbar">
+        <div class="logo-container">
+          <div class="logo">
+            <img src="static/icons/blue_logo.svg" alt="logo-img" />DBInsight
+          </div>
+          <!-- <div class="logo-subtitle">Conversational Data Analysis</div> -->
+        </div>
+        <div class="connection-status">
+          <div class="status-indicator" id="connectionStatusIndicator"></div>
+          <div class="status-text" id="connectionStatus">Not connected</div>
+        </div>
+        <button id="connectDb" class="connect-button">
+          <i class="fas fa-plug"></i> Connect Database
+        </button>
+      </div>
+
+      <!-- Enhanced Database Connection Modal -->
+      <div class="modal" id="dbModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Connect to Database</h2>
+            <button class="close-button" aria-label="Close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="connection-flow">
+            <div class="progress-steps">
+              <div class="step-indicator active" data-step="1">1</div>
+              <div class="step-connector"></div>
+              <div class="step-indicator" data-step="2">2</div>
+            </div>
+
+            <!-- Step 1: Database Selection -->
+            <div class="step active" id="step1">
+              <h3>Select Database Type</h3>
+              <p class="step-description">
+                Choose the database you want to connect to from the options
+                below
+              </p>
+
+              <div class="db-options">
+                <div class="db-option selected" data-db-type="mysql">
+                  <div class="db-icon">
+                    <img src="/static/icons/mysql.svg" alt="MySQL" />
+                  </div>
+                  <span class="db-name">MySQL</span>
+                </div>
+                <div class="db-option" data-db-type="postgres">
+                  <div class="db-icon">
+                    <img src="/static/icons/postgres.svg" alt="PostgreSQL" />
+                  </div>
+                  <span class="db-name">PostgreSQL</span>
+                </div>
+                <div class="db-option" data-db-type="mongodb">
+                  <div class="db-icon">
+                    <img src="/static/icons/mongo.svg" alt="MongoDB" />
+                  </div>
+                  <span class="db-name">MongoDB</span>
+                </div>
+                <div class="db-option" data-db-type="redis">
+                  <div class="db-icon">
+                    <img src="/static/icons/redis.svg" alt="Redis" />
+                  </div>
+                  <span class="db-name">Redis</span>
+                </div>
+                <div class="db-option" data-db-type="firebase">
+                  <div class="db-icon">
+                    <img src="/static/icons/firebase.svg" alt="Firebase" />
+                  </div>
+                  <span class="db-name">Firebase</span>
+                </div>
+                <div class="db-option" data-db-type="elasticsearch">
+                  <div class="db-icon">
+                    <img src="/static/icons/elastic.svg" alt="Elasticsearch" />
+                  </div>
+                  <span class="db-name">Elasticsearch</span>
+                </div>
+              </div>
+
+              <div class="db-instructions active" id="mysql-instructions">
+                <div class="instructions-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>MySQL Connection Guide</h4>
+                </div>
+                <div class="instructions-content">
+                  <p>You'll need the following information:</p>
+                  <ul>
+                    <li>
+                      <strong>Hostname</strong> - Usually <code>localhost</code>
+                      if connecting locally
+                    </li>
+                    <li>
+                      <strong>Port</strong> - Default is <code>3306</code>
+                    </li>
+                    <li><strong>Database name</strong></li>
+                    <li><strong>Username and password</strong></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="db-instructions" id="postgres-instructions">
+                <div class="instructions-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>PostgreSQL Connection Guide</h4>
+                </div>
+                <div class="instructions-content">
+                  <p>You'll need the following information:</p>
+                  <ul>
+                    <li>
+                      <strong>Hostname</strong> - Usually <code>localhost</code>
+                      if connecting locally
+                    </li>
+                    <li>
+                      <strong>Port</strong> - Default is <code>5432</code>
+                    </li>
+                    <li><strong>Database name</strong></li>
+                    <li><strong>Username and password</strong></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="db-instructions" id="mongodb-instructions">
+                <div class="instructions-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>MongoDB Connection Guide</h4>
+                </div>
+                <div class="instructions-content">
+                  <p>You'll need the following information:</p>
+                  <ul>
+                    <li>
+                      <strong>Hostname</strong> - Usually <code>localhost</code>
+                    </li>
+                    <li>
+                      <strong>Port</strong> - Default is <code>27017</code>
+                    </li>
+                    <li><strong>Database name</strong></li>
+                    <li>
+                      <strong>Username and password</strong> (if authentication
+                      is enabled)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="db-instructions" id="redis-instructions">
+                <div class="instructions-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>Redis Connection Guide</h4>
+                </div>
+                <div class="instructions-content">
+                  <p>You'll need the following information:</p>
+                  <ul>
+                    <li>
+                      <strong>Hostname</strong> - Usually <code>localhost</code>
+                    </li>
+                    <li>
+                      <strong>Port</strong> - Default is <code>6379</code>
+                    </li>
+                    <li>
+                      <strong>Password</strong> (if authentication is enabled)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="db-instructions" id="firebase-instructions">
+                <div class="instructions-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>Firebase Connection Guide</h4>
+                </div>
+                <div class="instructions-content">
+                  <p>You'll need the following information:</p>
+                  <ul>
+                    <li>
+                      <strong>Firebase config JSON</strong> from your project
+                      settings
+                    </li>
+                  </ul>
+                  <div class="note">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>
+                      Find this in Firebase Console > Project Settings > General
+                      > Your apps > SDK setup and configuration
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="db-instructions" id="elasticsearch-instructions">
+                <div class="instructions-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>Elasticsearch Connection Guide</h4>
+                </div>
+                <div class="instructions-content">
+                  <p>You'll need the following information:</p>
+                  <ul>
+                    <li>
+                      <strong>Hostname</strong> - Usually <code>localhost</code>
+                    </li>
+                    <li>
+                      <strong>Port</strong> - Default is <code>9200</code>
+                    </li>
+                    <li><strong>Index name</strong></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button class="next-btn primary-btn">
+                  Continue <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Connection Details -->
+            <div class="step" id="step2">
+              <h3>Enter Connection Details</h3>
+              <p class="step-description">
+                Provide the required information to connect to your
+                <span id="selectedDbName">MySQL</span> database
+              </p>
+
+              <button class="back-btn" id="backToSelection">
+                <i class="fas fa-arrow-left"></i> Change Database
+              </button>
+
+              <form id="dbConnectionForm">
+                <div class="form-group" id="hostGroup">
+                  <label for="dbHost">Host</label>
+                  <input
+                    type="text"
+                    id="dbHost"
+                    placeholder="localhost or server URL"
+                    required
+                  />
+                </div>
+
+                <div class="form-group" id="portGroup">
+                  <label for="dbPort">Port</label>
+                  <input
+                    type="text"
+                    id="dbPort"
+                    placeholder="e.g., 3306, 5432, 27017, etc."
+                  />
+                </div>
+
+                <div class="form-group" id="nameGroup">
+                  <label for="dbName">Database Name</label>
+                  <input
+                    type="text"
+                    id="dbName"
+                    placeholder="Your database name"
+                  />
+                </div>
+
+                <div class="form-group" id="userGroup">
+                  <label for="dbUser">Username</label>
+                  <input type="text" id="dbUser" placeholder="Username" />
+                </div>
+
+                <div class="form-group" id="passwordGroup">
+                  <label for="dbPassword">Password</label>
+                  <div class="password-input">
+                    <input
+                      type="password"
+                      id="dbPassword"
+                      placeholder="Password"
+                    />
+                    <button type="button" class="toggle-password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Specialized fields (initially hidden) -->
+                <div
+                  class="form-group"
+                  id="firebaseConfigGroup"
+                  style="display: none"
+                >
+                  <label for="firebaseConfig">Firebase Config (JSON)</label>
+                  <textarea
+                    id="firebaseConfig"
+                    placeholder='{"apiKey":"...","authDomain":"...",...}'
+                    rows="5"
+                  ></textarea>
+                  <div class="field-hint">
+                    <i class="fas fa-lightbulb"></i> Find this in your Firebase
+                    project settings
+                  </div>
+                </div>
+
+                <div class="form-group" id="esIndexGroup" style="display: none">
+                  <label for="esIndex">Index Name</label>
+                  <input
+                    type="text"
+                    id="esIndex"
+                    placeholder="Your index name"
+                  />
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="primary-btn connect-button">
+                    <i class="fas fa-plug"></i> Connect to Database
+                  </button>
+                  <div id="connectionError" class="error-message"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="chat-header">
+          <h1>Chat with your <span class="animated-text">Database</span></h1>
+          <p>Connect and query your data using natural language</p>
+        </div>
+
+        <div class="chat-container">
+          <p class="chat-instructions">
+            Type your question below or use the quick suggestions to get
+            started.
+          </p>
+          <p class="chat-tips">
+            <i class="fas fa-lightbulb"></i> Pro tip: You can ask about your
+            schema, request sample data, or visualize trends in your data.
+          </p>
+          <p class="chat-tips">
+            <i class="fas fa-info-circle"></i> Need help? Check out the
+            <a href="/help" class="help-link">documentation</a> for more
+            examples and tips.
+          </p>
+          <p class="chat-tips">
+            <i class="fas fa-database"></i> Supported databases include MySQL,
+            PostgreSQL, MongoDB, Redis, Firebase, and Elasticsearch.
+          </p>
+
+          <div class="welcome-message" id="welcomeMessage">
+            <div class="message-bubble ai-message">
+              <div class="message-content">
+                <div class="welcome-header">
+                  <div class="welcome-icon">
+                    <i class="fas fa-database"></i>
+                  </div>
+                  <h3>Welcome to DBInsight!</h3>
+                </div>
+                <p>
+                  I'm your AI assistant for data analysis. Connect to your
+                  database and start asking questions about your data in plain
+                  English.
+                </p>
+                <div class="example-queries">
+                  <p>Try asking things like:</p>
+                  <ul>
+                    <li>
+                      <span class="example-query"
+                        >"Show me the top 5 customers by revenue"</span
+                      >
+                    </li>
+                    <li>
+                      <span class="example-query"
+                        >"What's our monthly sales trend?"</span
+                      >
+                    </li>
+                    <li>
+                      <span class="example-query"
+                        >"Find orders with amounts over $1000"</span
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages"></div>
+        </div>
+
+        <div class="chat-input-container">
+          <div class="input-wrapper">
+            <div class="input-icon">
+              <i class="fas fa-comment-alt"></i>
+            </div>
+            <input
+              type="text"
+              id="queryPrompt"
+              placeholder="Ask something about your data..."
+              autocomplete="off"
+            />
+            <button id="sendButton" class="send-button">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+          <div class="suggestions">
+            <p class="suggestions-label">Quick suggestions:</p>
+            <div class="suggestion-buttons">
+              <button
+                class="suggestion-button"
+                data-prompt="Show me the first 10 records"
+                aria-label="Get a sample of your data"
+                title="Get a sample of your data"
+              >
+                Sample data
+              </button>
+              <button
+                class="suggestion-button"
+                data-prompt="What are the column names?"
+                aria-label="Show database schema"
+                title="Show database schema"
+              >
+                Schema info
+              </button>
+              <button
+                class="suggestion-button"
+                data-prompt="Show trends in the data"
+                aria-label="Visualize data trends"
+                title="Visualize data trends"
+              >
+                Visualize
+              </button>
+              <button
+                class="suggestion-button"
+                data-prompt="Find records where status is 'active'"
+                aria-label="Filter by status"
+                title="Filter by status"
+              >
+                Filter
+              </button>
+              <button
+                class="suggestion-button"
+                data-prompt="Count the number of users"
+                aria-label="Aggregate data"
+                title="Aggregate data"
+              >
+                Aggregate
+              </button>
+              <button
+                class="suggestion-button"
+                data-prompt="Show me the latest entries"
+                aria-label="Sort by latest"
+                title="Sort by latest"
+              >
+                Latest
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="supported-databases">
+          <p class="supported-label">Supported databases:</p>
+          <div class="database-icons">
+            <div class="db-icon-tooltip" data-tooltip="MySQL">
+              <img src="/static/icons/mysql.svg" alt="MySQL" />
+            </div>
+            <div class="db-icon-tooltip" data-tooltip="PostgreSQL">
+              <img src="/static/icons/postgres.svg" alt="PostgreSQL" />
+            </div>
+            <div class="db-icon-tooltip" data-tooltip="MongoDB">
+              <img src="/static/icons/mongo.svg" alt="MongoDB" />
+            </div>
+            <div class="db-icon-tooltip" data-tooltip="Redis">
+              <img src="/static/icons/redis.svg" alt="Redis" />
+            </div>
+            <div class="db-icon-tooltip" data-tooltip="Firebase">
+              <img src="/static/icons/firebase.svg" alt="Firebase" />
+            </div>
+            <div class="db-icon-tooltip" data-tooltip="Elasticsearch">
+              <img src="/static/icons/elastic.svg" alt="Elasticsearch" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // DOM Elements
+      const connectBtn = document.getElementById("connectDb");
+      const modal = document.getElementById("dbModal");
+      const modalOverlay = document.querySelector(".modal-overlay");
+      const closeBtn = document.querySelector(".close-button");
+      const dbOptions = document.querySelectorAll(".db-option");
+      const connectionForm = document.getElementById("dbConnectionForm");
+      const connectionStatus = document.getElementById("connectionStatus");
+      const connectionStatusIndicator = document.getElementById(
+        "connectionStatusIndicator"
+      );
+      const connectionError = document.getElementById("connectionError");
+      const chatMessages = document.getElementById("chatMessages");
+      const queryPrompt = document.getElementById("queryPrompt");
+      const sendButton = document.getElementById("sendButton");
+      const welcomeMessage = document.getElementById("welcomeMessage");
+      const suggestionButtons = document.querySelectorAll(".suggestion-button");
+      const togglePassword = document.querySelector(".toggle-password");
+      const passwordInput = document.getElementById("dbPassword");
+      const selectedDbName = document.getElementById("selectedDbName");
+
+      // Database-specific field groups
+      const hostGroup = document.getElementById("hostGroup");
+      const portGroup = document.getElementById("portGroup");
+      const nameGroup = document.getElementById("nameGroup");
+      const userGroup = document.getElementById("userGroup");
+      const passwordGroup = document.getElementById("passwordGroup");
+      const firebaseConfigGroup = document.getElementById(
+        "firebaseConfigGroup"
+      );
+      const esIndexGroup = document.getElementById("esIndexGroup");
+
+      // Current connection state
+      let currentConnection = null;
+      let currentDbType = "mysql"; // Default to MySQL
+      let conversationHistory = [];
+
+      // Initialize chat
+      function initChat() {
+        queryPrompt.focus();
+
+        // Handle Enter key
+        queryPrompt.addEventListener("keypress", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+
+        // Send button click
+        sendButton.addEventListener("click", sendMessage);
+
+        // Suggestion clicks
+        suggestionButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            queryPrompt.value = button.dataset.prompt;
+            queryPrompt.focus();
+          });
+        });
+
+        // Toggle password visibility
+        if (togglePassword && passwordInput) {
+          togglePassword.addEventListener("click", () => {
+            const type =
+              passwordInput.getAttribute("type") === "password"
+                ? "text"
+                : "password";
+            passwordInput.setAttribute("type", type);
+            togglePassword.innerHTML =
+              type === "password"
+                ? '<i class="fas fa-eye"></i>'
+                : '<i class="fas fa-eye-slash"></i>';
+          });
+        }
+
+        // Database type selection with instructions
+        dbOptions.forEach((option) => {
+          option.addEventListener("click", () => {
+            dbOptions.forEach((opt) => opt.classList.remove("selected"));
+            option.classList.add("selected");
+            currentDbType = option.dataset.dbType;
+            selectedDbName.textContent = option
+              .querySelector(".db-name")
+              .textContent.trim();
+
+            // Show instructions for selected DB
+            document.querySelectorAll(".db-instructions").forEach((el) => {
+              el.classList.remove("active");
+            });
+            const instructionsEl = document.getElementById(
+              `${currentDbType}-instructions`
+            );
+            if (instructionsEl) instructionsEl.classList.add("active");
+          });
+        });
+
+        // Step navigation
+        document.querySelector(".next-btn").addEventListener("click", () => {
+          document.getElementById("step1").classList.remove("active");
+          document.getElementById("step2").classList.add("active");
+          updateFormFields(currentDbType);
+          updateStepIndicator(2);
+        });
+
+        document
+          .getElementById("backToSelection")
+          .addEventListener("click", () => {
+            document.getElementById("step2").classList.remove("active");
+            document.getElementById("step1").classList.add("active");
+            updateStepIndicator(1);
+          });
+
+        // Connection modal handlers
+        connectBtn.addEventListener("click", () => {
+          modal.style.display = "flex";
+          document.body.style.overflow = "hidden";
+        });
+
+        closeBtn.addEventListener("click", closeModal);
+        modalOverlay.addEventListener("click", closeModal);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            closeModal();
+          }
+        });
+      }
+
+      function closeModal() {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+        connectionError.textContent = "";
+      }
+
+      function updateStepIndicator(step) {
+        const indicators = document.querySelectorAll(".step-indicator");
+        indicators.forEach((indicator) => {
+          indicator.classList.remove("active");
+          if (parseInt(indicator.dataset.step) <= step) {
+            indicator.classList.add("active");
+          }
+        });
+      }
+
+      // Update form fields based on selected database type
+      function updateFormFields(dbType) {
+        // Reset all optional fields
+        portGroup.style.display = "block";
+        nameGroup.style.display = "block";
+        userGroup.style.display = "block";
+        passwordGroup.style.display = "block";
+        firebaseConfigGroup.style.display = "none";
+        esIndexGroup.style.display = "none";
+
+        // Database-specific adjustments
+        switch (dbType) {
+          case "firebase":
+            portGroup.style.display = "none";
+            nameGroup.style.display = "none";
+            userGroup.style.display = "none";
+            passwordGroup.style.display = "none";
+            firebaseConfigGroup.style.display = "block";
+            break;
+
+          case "elasticsearch":
+            nameGroup.style.display = "none";
+            userGroup.style.display = "none";
+            passwordGroup.style.display = "none";
+            esIndexGroup.style.display = "block";
+            break;
+
+          case "redis":
+            nameGroup.style.display = "none";
+            userGroup.style.display = "none";
+            break;
+
+          case "mongodb":
+            // MongoDB uses all default fields
+            break;
+
+          // MySQL, PostgreSQL use all default fields
+        }
+
+        // Set default ports based on database type
+        const portInput = document.getElementById("dbPort");
+        if (dbType === "mysql") {
+          portInput.placeholder = "3306 (default)";
+        } else if (dbType === "postgres") {
+          portInput.placeholder = "5432 (default)";
+        } else if (dbType === "mongodb") {
+          portInput.placeholder = "27017 (default)";
+        } else if (dbType === "redis") {
+          portInput.placeholder = "6379 (default)";
+        } else if (dbType === "elasticsearch") {
+          portInput.placeholder = "9200 (default)";
+        }
+      }
+
+      // Add message to chat
+      function addMessage(role, content, data = null) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message-bubble ${role}-message`;
+        messageDiv.style.opacity = "0";
+        messageDiv.style.transform = "translateY(10px)";
+
+        let messageContent = `<div class="message-content">${content}</div>`;
+
+        if (data) {
+          if (data.sql) {
+            messageContent += `
+              <div class="message-data">
+                <div class="sql-display">
+                  <div class="data-label">
+                    <i class="fas fa-code"></i>
+                    <span>Generated SQL</span>
+                  </div>
+                  <pre>${data.sql}</pre>
+                </div>
+              </div>
+            `;
+          }
+
+          if (data.table_html) {
+            messageContent += `
+              <div class="message-data">
+                <div class="table-display">
+                  <div class="data-label">
+                    <i class="fas fa-table"></i>
+                    <span>Query Results</span>
+                  </div>
+                  ${data.table_html}
+                </div>
+              </div>
+            `;
+          }
+
+          if (data.chart) {
+            messageContent += `
+              <div class="message-data">
+                <div class="chart-display">
+                  <div class="data-label">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Visualization</span>
+                  </div>
+                  <img src="data:image/png;base64,${data.chart}" alt="Data Visualization">
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        messageDiv.innerHTML = messageContent;
+        chatMessages.appendChild(messageDiv);
+
+        // Animate the message appearance
+        setTimeout(() => {
+          messageDiv.style.opacity = "1";
+          messageDiv.style.transform = "translateY(0)";
+        }, 10);
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Add to conversation history
+        if (role === "user" || (role === "ai" && data)) {
+          conversationHistory.push({
+            role,
+            content,
+            data,
+          });
+        }
+      }
+
+      // Send message to server
+      async function sendMessage() {
+        const prompt = queryPrompt.value.trim();
+        if (!prompt) return;
+
+        if (!currentConnection) {
+          addMessage(
+            "ai",
+            "🔌 Please connect to a database first to start chatting with your data."
+          );
+          return;
+        }
+
+        // Add user message to chat
+        addMessage("user", prompt);
+        queryPrompt.value = "";
+
+        // Show loading indicator
+        const loadingDiv = document.createElement("div");
+        loadingDiv.className = "message-bubble ai-message loading";
+        loadingDiv.innerHTML = `
+          <div class="message-content">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="loading-text">Analyzing your data...</div>
+          </div>
+        `;
+        chatMessages.appendChild(loadingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+          const response = await fetch("/query", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              prompt: prompt,
+              connection: currentConnection,
+              history: conversationHistory,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(await response.text());
+          }
+
+          const data = await response.json();
+
+          // Remove loading indicator
+          chatMessages.removeChild(loadingDiv);
+
+          // Add AI response
+          let aiResponse = data.summary || "Here's what I found in your data:";
+          if (!data.summary && !data.chart && !data.table_html) {
+            aiResponse = data.sql
+              ? "I've generated this SQL query for you:"
+              : "I couldn't find any data matching your request.";
+          }
+
+          addMessage("ai", aiResponse, data);
+        } catch (error) {
+          // Remove loading indicator
+          chatMessages.removeChild(loadingDiv);
+
+          // Show error message
+          addMessage(
+            "ai",
+            `⚠️ Sorry, I encountered an error processing your request: ${error.message}`
+          );
+        }
+      }
+
+      // Handle database connection
+      connectionForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const selectedDb = document.querySelector(".db-option.selected");
+        if (!selectedDb) {
+          showError("Please select a database type");
+          return;
+        }
+
+        const dbType = selectedDb.dataset.dbType;
+        let connectionDetails = {};
+
+        // Common fields
+        connectionDetails.host = document.getElementById("dbHost").value.trim();
+        if (!connectionDetails.host) {
+          showError("Host is required");
+          return;
+        }
+
+        // Database-specific configuration
+        switch (dbType) {
+          case "firebase":
+            const configText = document
+              .getElementById("firebaseConfig")
+              .value.trim();
+            try {
+              connectionDetails.config = JSON.parse(configText);
+            } catch (e) {
+              showError("Invalid Firebase config JSON");
+              return;
+            }
+            break;
+
+          case "elasticsearch":
+            connectionDetails.port =
+              document.getElementById("dbPort").value.trim() || "9200";
+            connectionDetails.index = document
+              .getElementById("esIndex")
+              .value.trim();
+            if (!connectionDetails.index) {
+              showError("Index name is required for Elasticsearch");
+              return;
+            }
+            break;
+
+          case "redis":
+            connectionDetails.port =
+              document.getElementById("dbPort").value.trim() || "6379";
+            connectionDetails.password = document
+              .getElementById("dbPassword")
+              .value.trim();
+            break;
+
+          case "mongodb":
+            connectionDetails.port =
+              document.getElementById("dbPort").value.trim() || "27017";
+            connectionDetails.database = document
+              .getElementById("dbName")
+              .value.trim();
+            connectionDetails.user = document
+              .getElementById("dbUser")
+              .value.trim();
+            connectionDetails.password = document
+              .getElementById("dbPassword")
+              .value.trim();
+            break;
+
+          default: // MySQL, PostgreSQL
+            connectionDetails.port =
+              document.getElementById("dbPort").value.trim() ||
+              (dbType === "mysql" ? "3306" : "5432");
+            connectionDetails.database = document
+              .getElementById("dbName")
+              .value.trim();
+            connectionDetails.user = document
+              .getElementById("dbUser")
+              .value.trim();
+            connectionDetails.password = document
+              .getElementById("dbPassword")
+              .value.trim();
+
+            if (!connectionDetails.database) {
+              showError("Database name is required");
+              return;
+            }
+        }
+
+        try {
+          // Show loading state
+          const submitBtn = connectionForm.querySelector(
+            'button[type="submit"]'
+          );
+          submitBtn.disabled = true;
+          submitBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+
+          // Send connection request to backend
+          const response = await fetch("/connect", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: dbType,
+              config: connectionDetails,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            currentConnection = {
+              type: dbType,
+              config: connectionDetails,
+            };
+
+            // Reset modal state for next time
+            document.getElementById("step2").classList.remove("active");
+            document.getElementById("step1").classList.add("active");
+            updateStepIndicator(1);
+
+            // Update UI
+            connectionStatus.textContent = `Connected to ${dbType}`;
+            connectionStatusIndicator.className = "status-indicator connected";
+            connectBtn.innerHTML =
+              '<i class="fas fa-sync-alt"></i> Change Connection';
+            closeModal();
+
+            // Hide welcome message
+            welcomeMessage.style.display = "none";
+
+            // Add connection success message
+            addMessage(
+              "ai",
+              `✅ Successfully connected to ${dbType} database! You can now ask questions about your data. Try asking about your schema or requesting sample data to get started.`
+            );
+          } else {
+            throw new Error(data.error || "Connection failed");
+          }
+        } catch (error) {
+          showError(error.message);
+        } finally {
+          const submitBtn = connectionForm.querySelector(
+            'button[type="submit"]'
+          );
+          submitBtn.disabled = false;
+          submitBtn.innerHTML =
+            '<i class="fas fa-plug"></i> Connect to Database';
+        }
+      });
+
+      function showError(message) {
+        connectionError.textContent = message;
+        connectionError.style.display = "block";
+        connectionError.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Initialize the chat interface
+      document.addEventListener("DOMContentLoaded", () => {
+        initChat();
+        updateFormFields(currentDbType); // Initialize form fields for default DB type
+      });
+    </script>
+  </body>
+</html>
