@@ -71,7 +71,7 @@ Here are some screenshots of DBInsight in action:
 ![DBInsight Flow Diagram](static/screenshot/DBinsight_flow.webp)
 
 **App Home Page**  
-![Screenshot](static/screenshot/Screenshot from 2025-08-17 18-05-18.png)
+![Screenshot](static/screenshot/image2.png)
 
 **Supported DBs'**  
 ![Screenshot](static/screenshot/image.png)
