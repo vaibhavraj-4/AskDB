@@ -1,84 +1,93 @@
-<<<<<<< HEAD
 # DBInsight
 
-DBInsight is an intelligent conversational data analysis tool that allows users to connect with their databases and interact using natural language. Instead of writing complex SQL queries, users can simply ask questions in plain English and get insights, visualizations, and results directly.
+**DBInsight** is a Python-based web application designed to provide intelligent insights into SQL database schemas. It extracts metadata from databases to generate comprehensive documentation, aiding developers and database administrators in understanding and managing database structures effectively.
 
-## 🚀 Features
+## Features
 
-- 🔗 **Multi-Database Connectivity** – Connect to databases like MySQL, PostgreSQL, SQLite, and more.
-- 💬 **Conversational Querying** – Ask questions in natural language and get accurate SQL-generated results.
-- 📊 **Data Visualization** – Automatically generate charts and graphs from query results.
-- ⚡ **Fast & Intuitive** – Simple UI with responsive performance for seamless analysis.
-- 🔒 **Secure** – Credentials and queries are handled securely.
+- **Schema Documentation**: Automatically generates detailed documentation of database schemas, including tables, views, indexes, and relationships.
+- **Metadata Extraction**: Securely extracts metadata from SQL databases without accessing actual data records.
+- **User Interface**: Provides an interactive web interface for exploring and navigating the generated documentation.
+- **Role-Based Access Control**: Implements a secure user registration system with roles such as Owner, Admin, and User to manage access and permissions.
 
-## 🛠️ Tech Stack
+## Technologies Used
 
-- **Frontend:** HTML, CSS, JavaScript (Vanilla / React-based UI)
-- **Backend:** Python (Flask)
-- **Database Drivers:** SQLAlchemy, psycopg2, PyMySQL, SQLite3
-- **Visualization:** Matplotlib / Chart.js
-- **Deployment:** Render / Railway / Docker (optional)
+- **Backend**: Python
+- **Web Framework**: Flask
+- **Frontend**: HTML, CSS, JavaScript
+- **Database**: SQLite (for application data storage)
+- **Authentication**: Flask-Login for session management
 
-## 📥 Installation
+## Installation
 
 ### Prerequisites
-- Python 3.8+ installed
-- pip package manager
 
-### Setup
-```bash
-# Clone the repository
-git clone https://github.com/vaibhavraj-4/DBInsight.git
-cd DBInsight
+Ensure you have the following installed:
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+- Python 3.8 or higher
+- pip (Python package installer)
 
-# Install dependencies
-pip install -r requirements.txt
+### Steps
 
-# Run the server
-python app.py
-```
+1. Clone the repository:
 
-The app will run on `http://127.0.0.1:5000/`
+   ```bash
+   git clone https://github.com/vaibhavraj-4/DBInsight.git
+   cd DBInsight
+   ```
 
-## 📖 Usage
+2. Create and activate a virtual environment:
 
-1. Connect to your database (provide credentials).
-2. Start chatting: *“Show me the top 10 customers by revenue”*
-3. View results in **table** or **chart** format.
-4. Export query results as CSV (optional).
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
 
-## 📸 Screenshots
+3. Install the required dependencies:
 
-> *(Add screenshots here once available)*
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## 🤝 Contributing
+4. Run the application:
 
-Contributions are welcome!
+   ```bash
+   python app.py
+   ```
 
-1. Fork the repo
-2. Create a feature branch (`git checkout -b feature-name`)
-3. Commit your changes (`git commit -m 'Added new feature'`)
-4. Push to branch (`git push origin feature-name`)
-5. Open a Pull Request
+The application will start, and you can access it in your web browser at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-## 📌 Roadmap
+## Usage
 
-- [ ] Support more databases (MongoDB, Snowflake)
-- [ ] Add AI-powered query suggestions
-- [ ] User authentication & saved queries
-- [ ] Interactive dashboards
+- Upon accessing the application, you'll be prompted to register or log in.
+- After logging in, you can upload your SQL database credentials to extract metadata.
+- The application will generate and display documentation of your database schema.
+- Navigate through the documentation using the provided interface.
 
-## 📜 License
+## Screenshots
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for more details.
+Here are some screenshots of DBInsight in action:
 
----
+**DBInsight Flow Diagram**  
+![DBInsight Flow Diagram](static/screenshot/DBinsight_flow.webp)
 
-💡 *DBInsight makes databases conversational and accessible for everyone.*
-=======
-# AskDB
->>>>>>> 80165397 (added Screenshot and flow diagram)
+**App Home Page**  
+![Screenshot](static/screenshot/Screenshot from 2025-08-17 18-05-18.png)
+
+**Supported DBs'**  
+![Screenshot](static/screenshot/image.png)
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a new Pull Request.
+
+Please ensure your code adheres to the existing style and includes appropriate tests.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
