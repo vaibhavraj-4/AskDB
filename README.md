@@ -1,21 +1,12 @@
 # DBInsight
 
-**DBInsight** is a Python-based web application designed to provide intelligent insights into SQL database schemas. It extracts metadata from databases to generate comprehensive documentation, aiding developers and database administrators in understanding and managing database structures effectively.
-
-## Features
-
-- **Schema Documentation**: Automatically generates detailed documentation of database schemas, including tables, views, indexes, and relationships.
-- **Metadata Extraction**: Securely extracts metadata from SQL databases without accessing actual data records.
-- **User Interface**: Provides an interactive web interface for exploring and navigating the generated documentation.
-- **Role-Based Access Control**: Implements a secure user registration system with roles such as Owner, Admin, and User to manage access and permissions.
+**DBInsight** is a Python-based web application that allows you to interact with your databases using natural language. Simply connect to your database and start asking questions about your data in plain English.
 
 ## Technologies Used
 
 - **Backend**: Python
 - **Web Framework**: Flask
 - **Frontend**: HTML, CSS, JavaScript
-- **Database**: SQLite (for application data storage)
-- **Authentication**: Flask-Login for session management
 
 ## Installation
 
@@ -56,19 +47,12 @@ Ensure you have the following installed:
 
 The application will start, and you can access it in your web browser at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-## Usage
-
-- Upon accessing the application, you'll be prompted to register or log in.
-- After logging in, you can upload your SQL database credentials to extract metadata.
-- The application will generate and display documentation of your database schema.
-- Navigate through the documentation using the provided interface.
-
 ## Screenshots
 
 Here are some screenshots of DBInsight in action:
 
 **DBInsight Flow Diagram**  
-![DBInsight Flow Diagram](static/screenshot/DBinsight_flow.webp)
+![DBInsight Flow Diagram](static/screenshot/DBinsight_flow_diagram.webp)
 
 **App Home Page**  
 ![Screenshot](static/screenshot/image2.png)
